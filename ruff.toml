@@ -1,0 +1,10 @@
+line-length = 100
+target-version = "py311"
+extend-exclude = ["*.md"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["B008", "RUF001", "RUF002", "RUF003", "RUF012"]
+
+[lint.isort]
+known-first-party = ["app", "agent_core", "conftest"]

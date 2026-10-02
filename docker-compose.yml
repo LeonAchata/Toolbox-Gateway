@@ -1,107 +1,85 @@
+name: toolbox-gateway
+
+x-agent-env: &agent-env
+  TOOLBOX_URL: http://toolbox:8000
+  LLM_GATEWAY_URL: http://llm-gateway:8003
+  GATEWAY_API_KEY: ${GATEWAY_API_KEY:-}
+  DEFAULT_MODEL: ${DEFAULT_MODEL:-}
+  MAX_TOOL_ROUNDS: ${MAX_TOOL_ROUNDS:-6}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+  LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
+  LANGSMITH_PROJECT: ${LANGSMITH_PROJECT:-toolbox-gateway}
+
 services:
   toolbox:
-    build:
-      context: ./toolbox
-      dockerfile: Dockerfile
-    container_name: toolbox
+    build: ./toolbox
     ports:
       - "8000:8000"
     environment:
-      - LOG_LEVEL=DEBUG
-    networks:
-      - mcp-network
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
   llm-gateway:
-    build:
-      context: ./llm-gateway
-      dockerfile: Dockerfile
-    container_name: llm-gateway
+    build: ./llm-gateway
     ports:
       - "8003:8003"
     environment:
-      - HOST=0.0.0.0
-      - PORT=8003
-      - LOG_LEVEL=INFO
-      - CACHE_ENABLED=true
-      - CACHE_TTL=3600
-      - CACHE_MAX_SIZE=1000
-      - METRICS_ENABLED=true
-      # AWS Bedrock
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_REGION=${AWS_REGION}
-      - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID}
-      # OpenAI
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_DEFAULT_MODEL=${OPENAI_DEFAULT_MODEL:-gpt-4o}
-      # Google Gemini
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - GEMINI_DEFAULT_MODEL=${GEMINI_DEFAULT_MODEL:-gemini-1.5-flash}
-    networks:
-      - mcp-network
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GATEWAY_API_KEY: ${GATEWAY_API_KEY:-}
+      DEFAULT_MODEL: ${DEFAULT_MODEL:-}
+      CACHE_ENABLED: ${CACHE_ENABLED:-true}
+      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-3600}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-us.amazon.nova-pro-v1:0}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
+      LANGSMITH_PROJECT: ${LANGSMITH_PROJECT:-toolbox-gateway}
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
   agent-http:
     build:
-      context: ./agents/agent-http
-      dockerfile: Dockerfile
-    container_name: agent-http
+      context: ./agents
+      dockerfile: agent-http/Dockerfile
     ports:
       - "8001:8000"
     environment:
-      - MCP_SERVER_URL=http://toolbox:8000
-      - LLM_GATEWAY_URL=http://llm-gateway:8003
-      - DEFAULT_MODEL=bedrock-nova-pro
-      - LOG_LEVEL=DEBUG
-      - LANGSMITH_TRACING=${LANGSMITH_TRACING:-true}
-      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
-      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
-      - LANGSMITH_ENDPOINT=${LANGSMITH_ENDPOINT:-https://api.smith.langchain.com}
+      <<: *agent-env
     depends_on:
       toolbox:
         condition: service_healthy
       llm-gateway:
         condition: service_healthy
-    networks:
-      - mcp-network
     restart: unless-stopped
 
   agent-websocket:
     build:
-      context: ./agents/agent-websocket
-      dockerfile: Dockerfile
-    container_name: agent-websocket
+      context: ./agents
+      dockerfile: agent-websocket/Dockerfile
     ports:
       - "8002:8000"
     environment:
-      - MCP_SERVER_URL=http://toolbox:8000
-      - LLM_GATEWAY_URL=http://llm-gateway:8003
-      - DEFAULT_MODEL=bedrock-nova-pro
-      - LOG_LEVEL=DEBUG
-      - LANGSMITH_TRACING=${LANGSMITH_TRACING:-true}
-      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
-      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
-      - LANGSMITH_ENDPOINT=${LANGSMITH_ENDPOINT:-https://api.smith.langchain.com}
+      <<: *agent-env
     depends_on:
       toolbox:
         condition: service_healthy
       llm-gateway:
         condition: service_healthy
-    networks:
-      - mcp-network
     restart: unless-stopped
 
-networks:
-  mcp-network:
-    driver: bridge
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - agent-http
+      - agent-websocket
+    restart: unless-stopped

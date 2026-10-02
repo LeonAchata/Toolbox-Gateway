@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toolbox Gateway Console</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M9 11h14M9 16h9M9 21h11' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 4v16" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6 6a1.4 1.4 0 0 0 2 2l6-6a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <div class="brand-name">Toolbox Gateway</div>
+          <div class="brand-sub">Agent console</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="segmented" role="radiogroup" aria-label="Transport">
+          <button role="radio" data-transport="http" aria-checked="true">HTTP</button>
+          <button role="radio" data-transport="ws" aria-checked="false">WebSocket</button>
+        </div>
+        <label class="select">
+          <span class="visually-hidden">Model</span>
+          <select id="modelSelect" aria-label="Model">
+            <option value="">Gateway default</option>
+          </select>
+        </label>
+        <span class="status" id="status" data-state="idle">
+          <span class="status-dot"></span><span class="status-text">Connecting</span>
+        </span>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+          <svg><use href="#i-moon"/></svg>
+        </button>
+        <button class="icon-btn" id="settingsBtn" title="Connection settings" aria-label="Connection settings">
+          <svg><use href="#i-gear"/></svg>
+        </button>
+        <button class="icon-btn panel-toggle" id="panelToggle" title="Toggle inspector" aria-label="Toggle inspector">
+          <svg><use href="#i-panel"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="chat">
+      <div class="messages" id="messages" aria-live="polite">
+        <section class="empty" id="emptyState">
+          <h1>Ask something that needs a tool.</h1>
+          <p>The agent plans with the model you pick, calls tools from the toolbox over MCP-style JSON, and shows every step in the inspector.</p>
+          <div class="suggestions" id="suggestions">
+            <button>What is (125 * 8) + 47, and how many words are in "the quick brown fox"?</button>
+            <button>Convert "model context protocol" to uppercase and reverse it.</button>
+            <button>What time is it in Lima and in Tokyo right now?</button>
+            <button>Divide 1 by 0, then explain what happened.</button>
+          </div>
+        </section>
+      </div>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <button type="button" class="icon-btn subtle" id="resetBtn" title="New conversation" aria-label="New conversation">
+          <svg><use href="#i-reset"/></svg>
+        </button>
+        <textarea id="input" rows="1" placeholder="Message the agent" aria-label="Message"></textarea>
+        <button type="submit" class="send" id="sendBtn" aria-label="Send">
+          <svg><use href="#i-send"/></svg>
+        </button>
+      </form>
+      <div class="composer-hint">Enter to send, Shift+Enter for a new line. Conversations are remembered until you reset.</div>
+    </main>
+
+    <aside class="inspector" id="inspector">
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="trace" aria-selected="true">Trace</button>
+        <button role="tab" data-tab="tools" aria-selected="false">Tools <span class="count" id="toolCount">0</span></button>
+        <button role="tab" data-tab="metrics" aria-selected="false">Metrics</button>
+      </nav>
+
+      <section class="tab-panel" data-panel="trace">
+        <div class="trace-summary" id="traceSummary"></div>
+        <ol class="timeline" id="timeline">
+          <li class="timeline-empty">Send a message to see the agent's steps.</li>
+        </ol>
+      </section>
+
+      <section class="tab-panel" data-panel="tools" hidden>
+        <div class="tool-list" id="toolList"></div>
+      </section>
+
+      <section class="tab-panel" data-panel="metrics" hidden>
+        <div class="metrics-head">
+          <span>LLM gateway, since <span id="metricsSince">-</span></span>
+          <button class="link-btn" id="metricsRefresh">Refresh</button>
+        </div>
+        <div class="stat-grid" id="statGrid"></div>
+        <table class="model-table" id="modelTable"></table>
+      </section>
+    </aside>
+  </div>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="dialog-body">
+      <h2>Connection</h2>
+      <p class="muted">Leave blank to use the defaults. When served by the bundled nginx container the agents are reached through <code>/api/http</code> and <code>/api/ws</code>.</p>
+      <label>HTTP agent URL<input id="httpUrl" placeholder="/api/http"></label>
+      <label>WebSocket agent URL<input id="wsUrl" placeholder="/api/ws"></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn ghost">Cancel</button>
+        <button value="save" class="btn primary" id="saveSettings">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

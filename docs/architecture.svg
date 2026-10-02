@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#8a8f8b"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #d2d2ca; stroke-width: 1.5; }
+      .title { font-size: 15px; font-weight: 650; fill: #1b1d1c; }
+      .sub { font-size: 12px; fill: #6b706c; }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; fill: #565b58; }
+      .port { font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; font-size: 11px; fill: #0f766e; font-weight: 500; }
+      .edge { stroke: #8a8f8b; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .edge-dash { stroke: #8a8f8b; stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; marker-end: url(#arrow); }
+      .label { font-size: 11.5px; fill: #565b58; }
+      .pill { fill: #f0f0ec; }
+      .group { fill: #f6f6f3; stroke: #e3e3dd; stroke-width: 1; stroke-dasharray: 4 4; }
+    </style>
+  </defs>
+
+  <rect width="1000" height="600" fill="#fbfbf9"/>
+
+  <!-- Browser -->
+  <rect class="box" x="360" y="24" width="280" height="70" rx="12"/>
+  <text class="title" x="380" y="52">Console</text>
+  <text class="port" x="560" y="52">:8080</text>
+  <text class="sub" x="380" y="74">Static UI + nginx reverse proxy</text>
+
+  <!-- Agents group -->
+  <rect class="group" x="150" y="138" width="700" height="150" rx="16"/>
+  <text class="sub" x="170" y="160">agent_core (shared LangGraph loop, memory, tool budget)</text>
+
+  <rect class="box" x="180" y="176" width="290" height="92" rx="12"/>
+  <text class="title" x="200" y="204">HTTP agent</text>
+  <text class="port" x="410" y="204">:8001</text>
+  <text class="mono" x="200" y="228">POST /chat</text>
+  <text class="sub" x="200" y="250">Full answer plus trace per request</text>
+
+  <rect class="box" x="530" y="176" width="290" height="92" rx="12"/>
+  <text class="title" x="550" y="204">WebSocket agent</text>
+  <text class="port" x="760" y="204">:8002</text>
+  <text class="mono" x="550" y="228">WS /ws</text>
+  <text class="sub" x="550" y="250">Streams each step as it happens</text>
+
+  <!-- Gateway -->
+  <rect class="box" x="60" y="356" width="380" height="120" rx="12"/>
+  <text class="title" x="80" y="384">LLM gateway</text>
+  <text class="port" x="380" y="384">:8003</text>
+  <text class="mono" x="80" y="408">POST /generate  ·  GET /models  ·  GET /metrics</text>
+  <rect class="pill" x="80" y="424" width="118" height="24" rx="6"/>
+  <text class="label" x="92" y="440">Native tool calls</text>
+  <rect class="pill" x="206" y="424" width="96" height="24" rx="6"/>
+  <text class="label" x="218" y="440">TTL cache</text>
+  <rect class="pill" x="310" y="424" width="110" height="24" rx="6"/>
+  <text class="label" x="322" y="440">Cost + latency</text>
+  <text class="sub" x="80" y="466">One schema in, one schema out, for every provider</text>
+
+  <!-- Providers -->
+  <rect class="box" x="60" y="526" width="116" height="48" rx="10"/>
+  <text class="title" x="78" y="555" font-size="13">OpenAI</text>
+  <rect class="box" x="192" y="526" width="116" height="48" rx="10"/>
+  <text class="title" x="210" y="555" font-size="13">Gemini</text>
+  <rect class="box" x="324" y="526" width="116" height="48" rx="10"/>
+  <text class="title" x="336" y="555" font-size="13">Bedrock</text>
+
+  <!-- Toolbox -->
+  <rect class="box" x="560" y="356" width="380" height="120" rx="12"/>
+  <text class="title" x="580" y="384">Toolbox</text>
+  <text class="port" x="880" y="384">:8000</text>
+  <text class="mono" x="580" y="408">GET /tools  ·  POST /tools/call</text>
+  <text class="mono" x="580" y="428">/mcp  (native MCP, streamable HTTP)</text>
+  <text class="sub" x="580" y="456">12 tools: math, text, time. Schemas from type hints</text>
+
+  <!-- External MCP clients -->
+  <rect class="box" x="690" y="526" width="250" height="48" rx="10"/>
+  <text class="title" x="708" y="555" font-size="13">Any MCP client</text>
+  <text class="sub" x="826" y="555">Claude, Inspector</text>
+
+  <!-- Edges -->
+  <path class="edge" d="M440 94 L330 172"/>
+  <path class="edge" d="M560 94 L670 172"/>
+  <text class="label" x="300" y="128">/api/http</text>
+  <text class="label" x="652" y="128">/api/ws</text>
+
+  <path class="edge" d="M300 288 L270 352"/>
+  <path class="edge" d="M620 288 L330 352"/>
+  <path class="edge" d="M380 288 L680 352"/>
+  <path class="edge" d="M700 288 L740 352"/>
+
+  <path class="edge" d="M150 476 L118 522"/>
+  <path class="edge" d="M250 476 L250 522"/>
+  <path class="edge" d="M350 476 L382 522"/>
+
+  <path class="edge-dash" d="M815 526 L800 480"/>
+</svg>
