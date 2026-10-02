@@ -237,3 +237,7 @@ The tests do not need API keys. Provider adapters are tested against stubbed SDK
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Author
+
+- Leon Achata
